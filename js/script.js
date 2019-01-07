@@ -16,7 +16,7 @@ $(																														// jquery: attente chargement dom
 					
 					$.post																								// envoi json avec la methode post
 					(
-						"../php/fonction.php",																			// url de destination (php)
+						"../php/connexion.php",																			// url de destination (php)
 						JSON.stringify(objJSON), 																		// convertie l'objet js en texte json
 						function(reponse)																				// quand le serveur repond ca va dans reponse
 						{
@@ -77,7 +77,7 @@ $(																														// jquery: attente chargement dom
 					
 					$.post																								// envoi json avec la methode post
 					(
-						"../php/fonction.php",																			// url de destination (php)
+						"../php/inscription.php",																			// url de destination (php)
 						JSON.stringify(objJSON), 																		// convertie l'objet js en texte json
 						function(reponse)																				// quand le serveur repond ca va dans reponse
 						{
@@ -117,9 +117,9 @@ $(																														// jquery: attente chargement dom
 					if (($('[name="lgn"]').val() == "") && ($('[name="pwd"]').val() == ""))								// on n'a ni le login ni le password
 						$('.message').html("Veuillez vous identifier ...");												// on affiche le message d'erreur
 					else if ($('[name="lgn"]').val() == "")																// on n'a pas le login
-						$('.message').html("Entrez votre identifiant ...");												// on affiche le message d'erreur
+						$('.message').html("Veuillez saisir votre prenom ...");											// on affiche le message d'erreur
 					else																								// on n'a pas le password
-						$('.message').html("Entrez votre mot de passe ...");											// on affiche le message d'erreur
+						$('.message').html("Veuillez saisir votre nom ...");											// on affiche le message d'erreur
 				}
 			}
 		)
