@@ -71,8 +71,8 @@ $(																														// jquery: attente chargement dom
 				{
 					let objJSON =																						// creation d'un objet js pour json
 					{
-						lgn: $('[name="lgn"]').val(),																	// le login (nom+valeur)
-						pwd: $('[name="pwd"]').val()																	// le password (nom+valeur)
+						prn: $('[name="lgn"]').val(),																	// le prenom (nom+valeur)
+						nom: $('[name="pwd"]').val()																	// le nom (nom+valeur)
 					};
 					
 					$.post																								// envoi json avec la methode post
@@ -85,21 +85,14 @@ $(																														// jquery: attente chargement dom
 							let rcv = $.parseJSON(reponse);																// conversion objet json texte en objet js (rcv)
 							//console.log(rcv.mss);
 							$('.message').html(rcv.mss);
-							if (!rcv.rtr)																				// droit en ecriture
+							if (!rcv.rtr)																				// pas encore inscrit
 							{
 								$('[name="lgn"]').css("color", "black");
 								$('[name="pwd"]').css("color", "black");
 								$('.message').css("color", "green");
 								window.setTimeout(affPage, 5000);														// ajout attente pour demo
 							}
-							else if (rcv.rtr == 1)																		// droit en lecture
-							{
-								$('[name="lgn"]').css("color", "darkblue");
-								$('[name="pwd"]').css("color", "darkblue");
-								$('.message').css("color", "darkblue");
-								window.setTimeout(affPage, 5000);														// ajout attente pour demo
-							}
-							else																						// pas autorise
+							else																						// deja inscrit
 							{
 								//$('#bdd') disabled
 								//$('#adm') disabled
