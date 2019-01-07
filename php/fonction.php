@@ -26,18 +26,21 @@
 		
 		public function lectureBDD()																					// lecture de la bdd
 		{
-			$this->bdd = mysqli_connect('localhost', 'todo', 'abcABC123$', 'todo');										// ouverture de la base (user password table)
-			if (!$this->bdd)																							// erreur connexion bdd
+			try
 			{
-				$this->mss = mysqli_connect_error();
+				$this->bdd = new PDO("mysql: host=localhost;dbname=todo", 'todo', 'abcABC123$');						// ouverture de la base (host bdd user password)
+			}
+			catch (PDOException $pe)
+			{
+				$this->mss = $pe->getMessage();
 				$this->rtr=-2;
 				return false;
 			}
 			
 			$this->rqt = 'select drt from usr where lgn="'.$this->lgn.'" and pwd="'.$this->pwd.'"';						// genere la requete sql dynamiquement
-			$this->rsl = mysqli_query($this->bdd, $this->rqt);															// envoie la requete au gestionnaire de bdd (mysql)
-			$this->vlr = mysqli_fetch_assoc($this->rsl);																// recupere physiquement les donnees (plus cache)
-			mysqli_close($this->bdd);																					// referme la bdd
+			$this->rsl = $this->bdd->query($this->rqt);																	// envoie la requete au gestionnaire de bdd (mysql)
+			$this->rsl->setFetchMode(PDO::FETCH_ASSOC);																	// recupere physiquement les donnees (plus cache)
+			$this->bdd = null;																							// referme la bdd
 			
 			if ($this->rsl->num_rows == 0)																				// pas d'article correspondant dans la base
 			{

@@ -39,9 +39,16 @@ form, .cadre
 	width:180px;
 }
 
-.flex > button
+.flex > .connexion
 {
 	margin-left: 180px;
+	width: 25%;
+	flex-grow: 1;
+}
+
+.flex > .inscription
+{
+	margin-left: 10px;
 	width: 25%;
 	flex-grow: 1;
 }
@@ -52,7 +59,7 @@ input
 	flex-grow: 1;
 }
 
-.connexion
+button
 {
 	background-color: #666;
 	color: yellow;
@@ -60,7 +67,7 @@ input
 	border-radius: 8px;
 }
 
-.connexion:hover
+button:hover
 {
 	background-color: yellow;
 	color: #666;
