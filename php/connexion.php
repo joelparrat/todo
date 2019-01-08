@@ -37,7 +37,7 @@
 				return false;
 			}
 			
-			$this->rqt = 'SELECT drt FROM usr WHERE lgn="'.$this->lgn.'" AND pwd="'.$this->pwd.'"';						// genere la requete sql dynamiquement
+			$this->rqt = "SELECT drt FROM usr WHERE lgn='".$this->lgn."' AND pwd='".$this->pwd."' AND exs=1";			// genere la requete sql dynamiquement
 			$this->rsl = $this->bdd->query($this->rqt);																	// envoie la requete au gestionnaire de bdd (mysql)
 			$this->rsl->setFetchMode(PDO::FETCH_ASSOC);																	// recupere physiquement les donnees (plus cache)
 			$this->vlr = $this->rsl->fetch();
@@ -45,26 +45,13 @@
 			if ($this->vlr == false)																					// pas d'article correspondant dans la base
 			{
 				$this->rtr = 3;
-				$this->mss="Utilisateur inconnu ...";
+				$this->mss="Acces non autorise ...";
 			}
 			else if (count($this->vlr) > 0)																				// une seule reponse
 			{
 				$this->drt=$this->vlr['drt'];																			// sauve la valeur lue (droit)
-				if ($this->drt == 9)																					// droit en ecriture (9)
-				{
-					$this->rtr = 0;
-					$this->mss="Controle total ...";
-				}
-				else if ($this->drt == 0)																				// pas autorise (0)
-				{
-					$this->rtr = 2;
-					$this->mss="Acces inderdit ...";
-				}
-				else																									// droit en lecture (de 1 a 8)
-				{
-					$this->rtr = 1;
-					$this->mss="Acces autorise ...";
-				}
+				$this->rtr = 0;
+				$this->mss="Acces autorise ...";
 			}
 
 			$this->bdd = null;																							// referme la bdd

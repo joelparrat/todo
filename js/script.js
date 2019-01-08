@@ -20,9 +20,9 @@ $(																														// jquery: attente chargement dom
 						JSON.stringify(objJSON), 																		// convertie l'objet js en texte json
 						function(reponse)																				// quand le serveur repond ca va dans reponse
 						{
-							console.log(reponse);
+							//console.log(reponse);
 							let rcv = $.parseJSON(reponse);																// conversion objet json texte en objet js (rcv)
-							console.log(rcv.mss);
+							//console.log(rcv.mss);
 							$('.message').html(rcv.mss);
 							if (!rcv.rtr)																				// droit en ecriture
 							{

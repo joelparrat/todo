@@ -58,7 +58,7 @@
 				$this->exs=$this->vlr['exs'];																			// sauve la valeur lue (inscrit ?)
 				if ($this->exs == 0)																					// si 0 pas inscrit
 				{
-					$this->rqt = "UPDATE usr SET lgn='".$this->lgn."', pss='".$this->pwd."', exs=1 WHERE clf=".$clf;	// creation du login / password
+					$this->rqt = "UPDATE usr SET lgn='".$this->lgn."', pwd='".$this->pwd."', exs=1 WHERE clf=".$clf;	// creation du login / password
 					$this->rsl = $this->bdd->exec($this->rqt);															// envoie la requete au gestionnaire de bdd (mysql)
 					if ($this->rsl == false)																			// pas d'article correspondant dans la base
 					{
