@@ -18,13 +18,15 @@
 		public $mss;																									// message retour
 		public $rtr;																									// code retour
 																														// *** les methodes ***
-		public function __construct($prn, $nom)																				// constructeur de la classe json
+		public function __construct($prn, $nom, $lgn, $pwd)																				// constructeur de la classe json
 		{
 			$this->rtr=-1;																								// reponse: code retour par defaut
 			$this->mss="Veuillez vous identifier ...";																	// reponse: message par defaut
 			
 			$this->prn = $prn;																							// remplie avec la saisie (form)
 			$this->nom = $nom;																							// remplie avec la saisie (form)
+			$this->lgn = $lgn;																							// remplie avec la saisie (form)
+			$this->pwd = $pwd;																							// remplie avec la saisie (form)
 		}
 		
 		public function lectureBDD()																					// lecture de la bdd
@@ -40,7 +42,7 @@
 				return false;
 			}
 			
-			$this->rqt = 'select exs from usr where prn="'.$this->prn.'" and nom="'.$this->nom.'"';						// genere la requete sql dynamiquement
+			$this->rqt = 'SELECT clf, exs FROM usr WHERE prn="'.$this->prn.'" AND nom="'.$this->nom.'"';				// genere la requete sql dynamiquement
 			$this->rsl = $this->bdd->query($this->rqt);																	// envoie la requete au gestionnaire de bdd (mysql)
 			$this->rsl->setFetchMode(PDO::FETCH_ASSOC);																	// recupere physiquement les donnees (plus cache)
 			$this->vlr = $this->rsl->fetch();
@@ -48,15 +50,31 @@
 			if ($this->vlr == false)																					// pas d'article correspondant dans la base
 			{
 				$this->rtr = 3;
-				$this->mss="Utilisateur inconnu ...";
+				$this->mss="Utilisateur non autorise ...";
 			}
-			else if (count($this->vlr) > 0)																			// une seule reponse
+			else if (count($this->vlr) > 0)																				// une seule reponse
 			{
+				$clf = $this->vlr['clf'];
 				$this->exs=$this->vlr['exs'];																			// sauve la valeur lue (inscrit ?)
 				if ($this->exs == 0)																					// si 0 pas inscrit
 				{
-					$this->rtr = 0;
-					$this->mss="Saisir login password ...";
+					$this->rqt = "UPDATE usr SET lgn='".$this->lgn."', pss='".$this->pwd."', exs=1 WHERE clf=".$clf;	// creation du login / password
+					$this->rsl = $this->bdd->exec($this->rqt);															// envoie la requete au gestionnaire de bdd (mysql)
+					if ($this->rsl == false)																			// pas d'article correspondant dans la base
+					{
+						$this->rtr = 3;
+						$this->mss="Probleme BDD ...";
+					}
+					else if ($this->vlr == 0)																			// une seule reponse
+					{
+						$this->rtr = 3;
+						$this->mss="Pas de modification ...";
+					}
+					else
+					{
+						$this->rtr = 0;
+						$this->mss="Utilisateur enregistre ...";
+					}
 				}
 				else																									// inscrit
 				{
@@ -64,8 +82,8 @@
 					$this->mss="Vous etes deja inscrit ...";
 				}
 			}
-			$this->bdd = null;																							// referme la bdd
 
+			$this->bdd = null;																							// referme la bdd
 			return true;
 		}
 		
@@ -88,7 +106,7 @@
 	$rcv = trim(file_get_contents("php://input"));																		// lecture du post (deja controle en js)
 	$rcvOBJ = json_decode($rcv);																						// conversion json text (rcv) en objet php (rcvOBJ)
 
-	$clsjsn = new clsJSN($rcvOBJ->prn, $rcvOBJ->nom);																	// creation instance classe json
+	$clsjsn = new clsJSN($rcvOBJ->prn, $rcvOBJ->nom, $rcvOBJ->lgn, $rcvOBJ->pwd);										// creation instance classe json
 
 	if (!is_object($rcvOBJ))																							// si erreur format json --> reponse erreur + arret
 	{

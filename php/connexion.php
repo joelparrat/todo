@@ -15,7 +15,7 @@
 		public $mss;																									// message retour
 		public $rtr;																									// code retour
 																														// *** les methodes ***
-		public function __construct($lgn, $pwd)																				// constructeur de la classe json
+		public function __construct($lgn, $pwd)																			// constructeur de la classe json
 		{
 			$this->rtr=-1;																								// reponse: code retour par defaut
 			$this->mss="Veuillez vous identifier ...";																	// reponse: message par defaut
@@ -37,17 +37,17 @@
 				return false;
 			}
 			
-			$this->rqt = 'select drt from usr where lgn="'.$this->lgn.'" and pwd="'.$this->pwd.'"';						// genere la requete sql dynamiquement
+			$this->rqt = 'SELECT drt FROM usr WHERE lgn="'.$this->lgn.'" AND pwd="'.$this->pwd.'"';						// genere la requete sql dynamiquement
 			$this->rsl = $this->bdd->query($this->rqt);																	// envoie la requete au gestionnaire de bdd (mysql)
 			$this->rsl->setFetchMode(PDO::FETCH_ASSOC);																	// recupere physiquement les donnees (plus cache)
-			$this->bdd = null;																							// referme la bdd
+			$this->vlr = $this->rsl->fetch();
 			
-			if ($this->rsl->num_rows == 0)																				// pas d'article correspondant dans la base
+			if ($this->vlr == false)																					// pas d'article correspondant dans la base
 			{
 				$this->rtr = 3;
 				$this->mss="Utilisateur inconnu ...";
 			}
-			else if ($this->rsl->num_rows == 1)																			// une seule reponse
+			else if (count($this->vlr) > 0)																				// une seule reponse
 			{
 				$this->drt=$this->vlr['drt'];																			// sauve la valeur lue (droit)
 				if ($this->drt == 9)																					// droit en ecriture (9)
@@ -67,6 +67,7 @@
 				}
 			}
 
+			$this->bdd = null;																							// referme la bdd
 			return true;
 		}
 		

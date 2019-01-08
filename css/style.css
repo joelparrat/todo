@@ -59,6 +59,11 @@ input
 	flex-grow: 1;
 }
 
+.aff
+{
+	display: none;
+}
+
 button
 {
 	background-color: #666;
