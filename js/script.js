@@ -77,13 +77,13 @@ $(																														// jquery: attente chargement dom
 					
 					$.post																								// envoi json avec la methode post
 					(
-						"../php/inscription.php",																			// url de destination (php)
+						"../php/inscription.php",																		// url de destination (php)
 						JSON.stringify(objJSON), 																		// convertie l'objet js en texte json
 						function(reponse)																				// quand le serveur repond ca va dans reponse
 						{
-							//console.log(reponse);
+							console.log(reponse);
 							let rcv = $.parseJSON(reponse);																// conversion objet json texte en objet js (rcv)
-							//console.log(rcv.mss);
+							console.log(rcv.mss);
 							$('.message').html(rcv.mss);
 							if (!rcv.rtr)																				// pas encore inscrit
 							{

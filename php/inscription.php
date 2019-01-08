@@ -43,14 +43,14 @@
 			$this->rqt = 'select exs from usr where prn="'.$this->prn.'" and nom="'.$this->nom.'"';						// genere la requete sql dynamiquement
 			$this->rsl = $this->bdd->query($this->rqt);																	// envoie la requete au gestionnaire de bdd (mysql)
 			$this->rsl->setFetchMode(PDO::FETCH_ASSOC);																	// recupere physiquement les donnees (plus cache)
-			$this->bdd = null;																							// referme la bdd
+			$this->vlr = $this->rsl->fetch();
 			
-			if ($this->rsl->num_rows == 0)																				// pas d'article correspondant dans la base
+			if ($this->vlr == false)																					// pas d'article correspondant dans la base
 			{
 				$this->rtr = 3;
 				$this->mss="Utilisateur inconnu ...";
 			}
-			else if ($this->rsl->num_rows == 1)																			// une seule reponse
+			else if (count($this->vlr) > 0)																			// une seule reponse
 			{
 				$this->exs=$this->vlr['exs'];																			// sauve la valeur lue (inscrit ?)
 				if ($this->exs == 0)																					// si 0 pas inscrit
@@ -64,6 +64,7 @@
 					$this->mss="Vous etes deja inscrit ...";
 				}
 			}
+			$this->bdd = null;																							// referme la bdd
 
 			return true;
 		}
@@ -87,7 +88,7 @@
 	$rcv = trim(file_get_contents("php://input"));																		// lecture du post (deja controle en js)
 	$rcvOBJ = json_decode($rcv);																						// conversion json text (rcv) en objet php (rcvOBJ)
 
-	$clsjsn = new clsJSN($rcvOBJ->lgn, $rcvOBJ->pwd);																	// creation instance classe json
+	$clsjsn = new clsJSN($rcvOBJ->prn, $rcvOBJ->nom);																	// creation instance classe json
 
 	if (!is_object($rcvOBJ))																							// si erreur format json --> reponse erreur + arret
 	{
