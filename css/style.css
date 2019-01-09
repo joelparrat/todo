@@ -36,12 +36,12 @@ form, .cadre
 
 .flex > label
 {
-	width:180px;
+	width:120px;
 }
 
 .flex > .connexion
 {
-	margin-left: 180px;
+	margin-left: 120px;
 	width: 25%;
 	flex-grow: 1;
 }

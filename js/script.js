@@ -20,9 +20,13 @@ $(																														// jquery: attente chargement dom
 						JSON.stringify(objJSON), 																		// convertie l'objet js en texte json
 						function(reponse)																				// quand le serveur repond ca va dans reponse
 						{
-							//console.log(reponse);
+							//console.log("@@"+reponse+"$$");
 							let rcv = $.parseJSON(reponse);																// conversion objet json texte en objet js (rcv)
+							//	$('.message').html("Erreur interne");
+							//	alert("Erreur interne: pb format json");
+							//	console.log("texteJSON:@@"+reponse+"$$");
 							//console.log(rcv.mss);
+							//console.log(rcv.rtr);
 							$('.message').html(rcv.mss);
 							if (!rcv.rtr)																				// droit en ecriture
 							{
@@ -151,7 +155,7 @@ $(																														// jquery: attente chargement dom
 		
 		function affPage()
 		{
-			$(location).attr('href',"afflst.html");
+			$(location).attr('href',"../php/afflst.php");
 		} 
 	}
 );

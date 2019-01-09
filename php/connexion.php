@@ -1,95 +1,39 @@
 <?php
+	require_once 'gstbdd.php';
+	
+	$clsbdd = new clsBDD('localhost', 'todo', 'todo', 'abcABC123$');													// creation instance classe bdd
 
-	class clsJSN																										// classe JSON
-	{																													// *** les proprietes champ bdd ***
-		private $clf;																									// clef
-		private $lgn;																									// login
-		private $pwd;																									// password
-		private $drt;																									// droit
-																														// *** les proprietes acces bdd ***
-		private $bdd;																									// handle de la bdd
-		private $rqt;																									// requete sql
-		private $rsl;																									// resultat en memoire de la requete
-		private $vlr;																									// valeur reel lu dans la base
-																														// *** les propriete pour repondre ***
-		public $mss;																									// message retour
-		public $rtr;																									// code retour
-																														// *** les methodes ***
-		public function __construct($lgn, $pwd)																			// constructeur de la classe json
-		{
-			$this->rtr=-1;																								// reponse: code retour par defaut
-			$this->mss="Veuillez vous identifier ...";																	// reponse: message par defaut
-			
-			$this->lgn = $lgn;																							// remplie avec la saisie (form)
-			$this->pwd = $pwd;																							// remplie avec la saisie (form)
-		}
-		
-		public function lectureBDD()																					// lecture de la bdd
-		{
-			try
-			{
-				$this->bdd = new PDO("mysql: host=localhost;dbname=todo", 'todo', 'abcABC123$');						// ouverture de la base (host bdd user password)
-			}
-			catch (PDOException $pe)
-			{
-				$this->mss = $pe->getMessage();
-				$this->rtr=-2;
-				return false;
-			}
-			
-			$this->rqt = "SELECT drt FROM usr WHERE lgn='".$this->lgn."' AND pwd='".$this->pwd."' AND exs=1";			// genere la requete sql dynamiquement
-			$this->rsl = $this->bdd->query($this->rqt);																	// envoie la requete au gestionnaire de bdd (mysql)
-			$this->rsl->setFetchMode(PDO::FETCH_ASSOC);																	// recupere physiquement les donnees (plus cache)
-			$this->vlr = $this->rsl->fetch();
-			
-			if ($this->vlr == false)																					// pas d'article correspondant dans la base
-			{
-				$this->rtr = 3;
-				$this->mss="Acces non autorise ...";
-			}
-			else if (count($this->vlr) > 0)																				// une seule reponse
-			{
-				$this->drt=$this->vlr['drt'];																			// sauve la valeur lue (droit)
-				$this->rtr = 0;
-				$this->mss="Acces autorise ...";
-			}
+	$rcv = trim(file_get_contents("php://input"));																		// lecture du post (deja controle en js)
+	$clsbdd->clsrcv = json_decode($rcv);																				// conversion json text en objet php
+	if (!is_object($clsbdd->clsrcv))																					// si erreur json --> reponse erreur + arret
+	{
+		$clsbdd->clssnd->mss = "Erreur objet JSON";																		// message d'erreur
+		$clsbdd->clssnd->rtr = -3;																						// code erreur
+		echo json_encode($clsbdd->clssnd);																				// renvoie au js le json convertie en texte
+		return true;
+	}
 
-			$this->bdd = null;																							// referme la bdd
-			return true;
-		}
-		
-		public function sndRPN()																						// envoi reponse
-		{
-			echo json_encode($clsjsn);																					// renvoie au js le json convertie en texte
-		}
-/*		
-		public function setmss($mss)																					// setter du message en retour
-		{
-			$this->mss = $mss;
-		}
-		public function setrtr($rtr)																					// setter du code retour
-		{
-			$this->rtr = $rtr;
-		}
-*/
+	$vlr = $clsbdd->openBDD();																							// ouverture base
+	if ($vlr != false)																									// erreur ouverture
+	{
+		echo json_encode($clsbdd->clssnd);																				// renvoie au js le json convertie en texte
+		return true;
 	}
 	
-	$rcv = trim(file_get_contents("php://input"));																		// lecture du post (deja controle en js)
-	$rcvOBJ = json_decode($rcv);																						// conversion json text (rcv) en objet php (rcvOBJ)
-
-	$clsjsn = new clsJSN($rcvOBJ->lgn, $rcvOBJ->pwd);																	// creation instance classe json
-
-	if (!is_object($rcvOBJ))																							// si erreur format json --> reponse erreur + arret
+	$rqt = "SELECT drt FROM usr WHERE lgn='".$clsbdd->clsrcv->lgn."' AND pwd='".$clsbdd->clsrcv->pwd."' AND exs=1";
+	$vlr = $clsbdd->selectBDD($rqt);																					// lecture des droit dans la bdd
+	if ($vlr == false)																									// pas d'article correspondant dans la base
 	{
-		$clsjsn->mss = "Erreur objet JSON";																				// message d'erreur
-		$clsjsn->rtr = -3;																								// code erreur
-		echo json_encode($clsjsn);																						// renvoie au js le json convertie en texte
-		return false;
+		$clsbdd->clssnd->rtr = 3;
+		$clsbdd->clssnd->mss="Acces non autorise ...";
+		echo json_encode($clsbdd->clssnd);																				// renvoie au js le json convertie en texte
+		return true;
 	}
 
-	$clsjsn->lectureBDD();																								// lecture des droit dans la bdd
-	//$clsjsn->sndRPN();																								// repond au js 
-	echo json_encode($clsjsn);																							// renvoie au js le json convertie en texte
-	return true;
+	$clsbdd->clssnd->rtr = 0;
+	$clsbdd->clssnd->mss="Acces autorise ...";
+
+	echo json_encode($clsbdd->clssnd);																					// renvoie au js le json convertie en texte
+	return false;
  ?>
 
