@@ -67,17 +67,17 @@
 			return $this->rsl->fetch();
 		}
 
-		function suivantBDD($rqt)
+		function suivantBDD()
 		{
 			return $this->rsl->fetch();
 		}
 		
 		function closeBDD()
 		{
-			$bdd = null;
+			$this->bdd = null;
 		}
 	}
 
-	//$clsbdd = new clsBDD('localhost', 'todo', 'todo', 'abcABC123$');													// creation instance classe json
+	$clsbdd = new clsBDD('localhost', 'todo', 'todo', 'abcABC123$');													// creation instance classe bdd
 	
 ?>

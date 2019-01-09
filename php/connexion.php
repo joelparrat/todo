@@ -1,7 +1,7 @@
 <?php
 	require_once 'gstbdd.php';
 	
-	$clsbdd = new clsBDD('localhost', 'todo', 'todo', 'abcABC123$');													// creation instance classe bdd
+	//$clsbdd = new clsBDD('localhost', 'todo', 'todo', 'abcABC123$');													// creation instance classe bdd
 
 	$rcv = trim(file_get_contents("php://input"));																		// lecture du post (deja controle en js)
 	$clsbdd->clsrcv = json_decode($rcv);																				// conversion json text en objet php
@@ -20,7 +20,7 @@
 		return true;
 	}
 	
-	$rqt = "SELECT drt FROM usr WHERE lgn='".$clsbdd->clsrcv->lgn."' AND pwd='".$clsbdd->clsrcv->pwd."' AND exs=1";
+	$rqt = "SELECT clf FROM usr WHERE lgn='".$clsbdd->clsrcv->lgn."' AND pwd='".$clsbdd->clsrcv->pwd."' AND exs=1";
 	$vlr = $clsbdd->selectBDD($rqt);																					// lecture des droit dans la bdd
 	if ($vlr == false)																									// pas d'article correspondant dans la base
 	{
@@ -32,8 +32,11 @@
 
 	$clsbdd->clssnd->rtr = 0;
 	$clsbdd->clssnd->mss="Acces autorise ...";
+	setcookie("clefutilisateur", $vlr['clf'], time()+(24*60*60));
 
-	echo json_encode($clsbdd->clssnd);																					// renvoie au js le json convertie en texte
+	echo json_encode($clsbdd->clssnd);
+	$clsbdd->closeBDD();
+																						// renvoie au js le json convertie en texte
 	return false;
  ?>
 

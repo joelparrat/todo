@@ -137,7 +137,7 @@ $(																														// jquery: attente chargement dom
 		(
 			function()
 			{
-				//$('.message').html("Veuillez vous identifier ...");														// on affiche le message d'erreur
+				//$('.message').html("Veuillez vous identifier ...");													// on affiche le message d'erreur
 				$('.aff').css("display", "none");
 				//$('.message').css("color", "darkblue");
 			}
