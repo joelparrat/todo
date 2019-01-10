@@ -28,13 +28,22 @@
 						return true;
 					}
 					
-					$rqt = "SELECT usr.prn, usr.nom, lst.lst FROM jnt, lst, usr WHERE usr.clf=lst.clf AND jnt.nom='".$_COOKIE['clefutilisateur']."'";
+					$rqt = "SELECT usr.prn, usr.nom, lst.lst FROM jnt, lst, usr WHERE usr.clf=jnt.nom AND lst.clf=jnt.lst AND jnt.drt=0 AND usr.clf=".$_COOKIE['clefutilisateur'];
 					$vlr = $clsbdd->selectBDD($rqt);
 					while ($vlr != false)
 					{
 						echo "<li>".$vlr['prn']." ".$vlr['nom']." ".$vlr['lst']."</li>";
 						$vlr = $clsbdd->suivantBDD();
 					}
+					
+					$rqt = "SELECT usr.prn, usr.nom, lst.lst FROM jnt, lst, usr WHERE usr.clf=jnt.nom AND lst.clf=jnt.lst AND jnt.drt=0 AND jnt.lst IN (SELECT jnt.lst FROM jnt, lst, usr WHERE usr.clf=jnt.nom AND lst.clf=jnt.lst AND jnt.drt=1 AND usr.clf=".$_COOKIE['clefutilisateur'].")";
+					$vlr = $clsbdd->selectBDD($rqt);
+					while ($vlr != false)
+					{
+						echo "<li>".$vlr['prn']." ".$vlr['nom']." ".$vlr['lst']."</li>";
+						$vlr = $clsbdd->suivantBDD();
+					}
+					$clsbdd->closeBDD();
 				?>
 			</ul>
 		</div>
