@@ -67,6 +67,18 @@
 			return $this->rsl->fetch();
 		}
 
+		function insertBDD($rqt)
+		{
+			$this->rsl = $this->bdd->exec($rqt);																		// envoie la requete au gestionnaire de bdd (mysql)
+			return true;
+		}
+
+		function updateBDD($rqt)
+		{
+			$this->rsl = $this->bdd->exec($rqt);																		// envoie la requete au gestionnaire de bdd (mysql)
+			return true;
+		}
+
 		function suivantBDD()
 		{
 			return $this->rsl->fetch();

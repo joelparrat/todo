@@ -1,61 +1,46 @@
 <?php
-	echo "<h3>Creation Liste</h3>";
-	echo "<label>Libelle</label>";
-	echo '<input type="text" name="lst"/>';
+
+	require_once 'gstbdd.php';
 	
-	try
+	$rcv = trim(file_get_contents("php://input"));																		// lecture du post (deja controle en js)
+	$clsbdd->clsrcv = json_decode($rcv);																				// conversion json text en objet php
+	if (!is_object($clsbdd->clsrcv))																					// si erreur json --> reponse erreur + arret
 	{
-		$this->bdd = new PDO("mysql: host=localhost;dbname=todo", 'todo', 'abcABC123$');						// ouverture de la base (host bdd user password)
-	}
-	catch (PDOException $pe)
-	{
-		$this->mss = $pe->getMessage();
-		$this->rtr=-2;
-		return false;
-	}
-	
-	$this->rqt = 'SELECT clf, exs FROM usr WHERE prn="'.$this->prn.'" AND nom="'.$this->nom.'"';				// genere la requete sql dynamiquement
-	$this->rsl = $this->bdd->query($this->rqt);																	// envoie la requete au gestionnaire de bdd (mysql)
-	$this->rsl->setFetchMode(PDO::FETCH_ASSOC);																	// recupere physiquement les donnees (plus cache)
-	$this->vlr = $this->rsl->fetch();
-	
-	if ($this->vlr == false)																					// pas d'article correspondant dans la base
-	{
-		$this->rtr = 3;
-		$this->mss="Utilisateur non autorise ...";
-	}
-	else if (count($this->vlr) > 0)																				// une seule reponse
-	{
-		$clf = $this->vlr['clf'];
-		$this->exs=$this->vlr['exs'];																			// sauve la valeur lue (inscrit ?)
-		if ($this->exs == 0)																					// si 0 pas inscrit
-		{
-			$this->rqt = "UPDATE usr SET lgn='".$this->lgn."', pwd='".$this->pwd."', exs=1 WHERE clf=".$clf;	// creation du login / password
-			$this->rsl = $this->bdd->exec($this->rqt);															// envoie la requete au gestionnaire de bdd (mysql)
-			if ($this->rsl == false)																			// pas d'article correspondant dans la base
-			{
-				$this->rtr = 3;
-				$this->mss="Probleme BDD ...";
-			}
-			else if ($this->vlr == 0)																			// une seule reponse
-			{
-				$this->rtr = 3;
-				$this->mss="Pas de modification ...";
-			}
-			else
-			{
-				$this->rtr = 0;
-				$this->mss="Utilisateur enregistre ...";
-			}
-		}
-		else																									// inscrit
-		{
-			$this->rtr = 1;
-			$this->mss="Vous etes deja inscrit ...";
-		}
+		$clsbdd->clssnd->mss = "Erreur objet JSON";																		// message d'erreur
+		$clsbdd->clssnd->rtr = -3;																						// code erreur
+		echo json_encode($clsbdd->clssnd);																				// renvoie au js le json convertie en texte
+		return true;
 	}
 
-	$this->bdd = null;																							// referme la bdd
-	return true;
+	$vlr = $clsbdd->openBDD();																							// ouverture base
+	if ($vlr != false)																									// erreur ouverture
+	{
+		echo json_encode($clsbdd->clssnd);																				// renvoie au js le json convertie en texte
+		return true;
+	}
+	
+	$rqt = "SELECT lst.lst FROM jnt, lst, usr WHERE usr.clf=jnt.nom AND lst.clf=jnt.lst AND jnt.drt=0 AND usr.clf=".$_COOKIE['clefutilisateur'];
+
+	$vlr = $clsbdd->selectBDD($rqt);
+	while ($vlr != false)
+	{
+		if ($vlr['lst'] == $clsbdd->clsrcv->lst)
+		{
+			$clsbdd->clssnd->mss = "Vous avez deja cette liste";															// message d'erreur
+			$clsbdd->clssnd->rtr = -3;																						// code erreur
+			echo json_encode($clsbdd->clssnd);																				// renvoie au js le json convertie en texte
+			return true;
+		}
+		$vlr = $clsbdd->suivantBDD();
+	}
+
+	$rqt = "INSERT INTO lst (lst) VALUES ('".$clsbdd->clsrcv->lst."')";
+	$clsbdd->insertBDD($rqt);
+	$clsbdd->closeBDD();
+	
+	$clsbdd->clssnd->mss = "Liste cree";																		// message d'erreur
+	$clsbdd->clssnd->rtr = 0;																						// code erreur
+	echo json_encode($clsbdd->clssnd);
+	return false;																										// renvoie au js le json convertie en texte
 ?>
 

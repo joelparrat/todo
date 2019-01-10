@@ -14,7 +14,7 @@
 		<h3>My Lists</h3>
 		<div class="cadre">
 			<div class="centre">
-				<a href="creation.php">Creation nouvelle liste</a>
+				<a href="../html/creation.html">Creation nouvelle liste</a>
 			</div>
 			
 			<ul>
@@ -32,7 +32,7 @@
 					$vlr = $clsbdd->selectBDD($rqt);
 					while ($vlr != false)
 					{
-						echo "<li>".$vlr['prn']." ".$vlr['nom']." ".$vlr['lst']."</li>";
+						echo "<li><a href='affact.php'>".$vlr['prn']." ".$vlr['nom']." ".$vlr['lst']."</a></li>";
 						$vlr = $clsbdd->suivantBDD();
 					}
 					
@@ -40,7 +40,7 @@
 					$vlr = $clsbdd->selectBDD($rqt);
 					while ($vlr != false)
 					{
-						echo "<li>".$vlr['prn']." ".$vlr['nom']." ".$vlr['lst']."</li>";
+						echo "<li><a href='affact.php'>".$vlr['prn']." ".$vlr['nom']." ".$vlr['lst']."</a></li>";
 						$vlr = $clsbdd->suivantBDD();
 					}
 					$clsbdd->closeBDD();

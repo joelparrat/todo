@@ -156,7 +156,66 @@ $(																														// jquery: attente chargement dom
 		function affPage()
 		{
 			$(location).attr('href',"../php/afflst.php");
-		} 
+		}
+	
+		$('.valider').click																								// evenement click du bouton connexion
+		(
+			function()
+			{
+				if ($('[name="lst"]').val() != "")																		// controle si la saisie a ete faite (oui)
+				{
+					let objJSON =																						// creation d'un objet js pour json
+					{
+						lst: $('[name="lst"]').val()																	// le nom de la list (nom+valeur)
+					};
+					console.log("##"+JSON.stringify(objJSON)+"&&");
+					$.post																								// envoi json avec la methode post
+					(
+						"../php/creation.php",																			// url de destination (php)
+						JSON.stringify(objJSON), 																		// convertie l'objet js en texte json
+						function(reponse)																				// quand le serveur repond ca va dans reponse
+						{
+							console.log("@@"+reponse+"$$");
+							let rcv = $.parseJSON(reponse);																// conversion objet json texte en objet js (rcv)
+							//	$('.message').html("Erreur interne");
+							//	alert("Erreur interne: pb format json");
+							//	console.log("texteJSON:@@"+reponse+"$$");
+							//console.log(rcv.mss);
+							//console.log(rcv.rtr);
+							$('.message').html(rcv.mss);
+							if (!rcv.rtr)																				// droit en ecriture
+							{
+								$('[name="lgn"]').css("color", "black");
+								$('[name="pwd"]').css("color", "black");
+								$('.message').css("color", "green");
+								window.setTimeout(affPage, 5000);														// ajout attente pour demo
+							}
+							else if (rcv.rtr == 1)																		// droit en lecture
+							{
+								$('[name="lgn"]').css("color", "darkblue");
+								$('[name="pwd"]').css("color", "darkblue");
+								$('.message').css("color", "darkblue");
+								window.setTimeout(affPage, 5000);														// ajout attente pour demo
+							}
+							else																						// pas autorise
+							{
+								//$('#bdd') disabled
+								//$('#adm') disabled
+								$('[name="lgn"]').css("color", "red");
+								$('[name="pwd"]').css("color", "red");
+								$('.message').css("color", "darkblue");
+							}
+						}
+					);
+
+				}
+				else																									// controle si la saisie a ete faite (non)
+				{
+					$('.message').css("color", "red");																	// positionne la couleur du message d'erreur (rouge)
+					$('.message').html("Entrez un nom pour la liste ...");												// on affiche le message d'erreur
+				}
+			}
+		)
 	}
 );
 
