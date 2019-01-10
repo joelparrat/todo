@@ -20,7 +20,6 @@
 	}
 	
 	$rqt = "SELECT lst.lst FROM jnt, lst, usr WHERE usr.clf=jnt.nom AND lst.clf=jnt.lst AND jnt.drt=0 AND usr.clf=".$_COOKIE['clefutilisateur'];
-
 	$vlr = $clsbdd->selectBDD($rqt);
 	while ($vlr != false)
 	{
@@ -35,6 +34,12 @@
 	}
 
 	$rqt = "INSERT INTO lst (lst) VALUES ('".$clsbdd->clsrcv->lst."')";
+	$clsbdd->insertBDD($rqt);
+
+	$rqt = "SELECT clf FROM lst WHERE lst='".$clsbdd->clsrcv->lst."' ORDER BY clf DESC LIMIT 1";
+	$vlr = $clsbdd->selectBDD($rqt);
+
+	$rqt = "INSERT INTO jnt (nom, lst, drt) VALUES (".$_COOKIE['clefutilisateur'].", ".$vlr['clf'].", 0)";
 	$clsbdd->insertBDD($rqt);
 	$clsbdd->closeBDD();
 	

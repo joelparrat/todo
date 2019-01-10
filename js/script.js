@@ -168,7 +168,7 @@ $(																														// jquery: attente chargement dom
 					{
 						lst: $('[name="lst"]').val()																	// le nom de la list (nom+valeur)
 					};
-					console.log("##"+JSON.stringify(objJSON)+"&&");
+
 					$.post																								// envoi json avec la methode post
 					(
 						"../php/creation.php",																			// url de destination (php)
@@ -189,21 +189,6 @@ $(																														// jquery: attente chargement dom
 								$('[name="pwd"]').css("color", "black");
 								$('.message').css("color", "green");
 								window.setTimeout(affPage, 5000);														// ajout attente pour demo
-							}
-							else if (rcv.rtr == 1)																		// droit en lecture
-							{
-								$('[name="lgn"]').css("color", "darkblue");
-								$('[name="pwd"]').css("color", "darkblue");
-								$('.message').css("color", "darkblue");
-								window.setTimeout(affPage, 5000);														// ajout attente pour demo
-							}
-							else																						// pas autorise
-							{
-								//$('#bdd') disabled
-								//$('#adm') disabled
-								$('[name="lgn"]').css("color", "red");
-								$('[name="pwd"]').css("color", "red");
-								$('.message').css("color", "darkblue");
 							}
 						}
 					);
