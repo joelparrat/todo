@@ -157,6 +157,11 @@ $(																														// jquery: attente chargement dom
 		{
 			$(location).attr('href',"../php/afflst.php");
 		}
+		
+		function affAction()
+		{
+			$(location).attr('href',"../php/affact.php");
+		}
 	
 		$('.valider').click																								// evenement click du bouton connexion
 		(
@@ -198,6 +203,50 @@ $(																														// jquery: attente chargement dom
 				{
 					$('.message').css("color", "red");																	// positionne la couleur du message d'erreur (rouge)
 					$('.message').html("Entrez un nom pour la liste ...");												// on affiche le message d'erreur
+				}
+			}
+		)
+	
+		$('.action').click																								// evenement click du bouton action
+		(
+			function()
+			{
+				if ($('[name="act"]').val() != "")																		// controle si la saisie a ete faite (oui)
+				{
+					let objJSON =																						// creation d'un objet js pour json
+					{
+						act: $('[name="act"]').val()																	// le nom de la list (nom+valeur)
+					};
+
+					$.post																								// envoi json avec la methode post
+					(
+						"../php/crtact.php",																			// url de destination (php)
+						JSON.stringify(objJSON), 																		// convertie l'objet js en texte json
+						function(reponse)																				// quand le serveur repond ca va dans reponse
+						{
+							console.log("@@"+reponse+"$$");
+							let rcv = $.parseJSON(reponse);																// conversion objet json texte en objet js (rcv)
+							//	$('.message').html("Erreur interne");
+							//	alert("Erreur interne: pb format json");
+							//	console.log("texteJSON:@@"+reponse+"$$");
+							//console.log(rcv.mss);
+							//console.log(rcv.rtr);
+							$('.message').html(rcv.mss);
+							if (!rcv.rtr)																				// droit en ecriture
+							{
+								$('[name="lgn"]').css("color", "black");
+								$('[name="pwd"]').css("color", "black");
+								$('.message').css("color", "green");
+								window.setTimeout(affAction, 5000);														// ajout attente pour demo
+							}
+						}
+					);
+
+				}
+				else																									// controle si la saisie a ete faite (non)
+				{
+					$('.message').css("color", "red");																	// positionne la couleur du message d'erreur (rouge)
+					$('.message').html("Entrez un nom pour l'action ...");												// on affiche le message d'erreur
 				}
 			}
 		)

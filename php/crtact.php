@@ -18,32 +18,15 @@
 		echo json_encode($clsbdd->clssnd);																				// renvoie au js le json convertie en texte
 		return true;
 	}
-	
-	$rqt = "SELECT lst.lst FROM jnt, lst, usr WHERE usr.clf=jnt.nom AND lst.clf=jnt.lst AND jnt.drt=0 AND usr.clf=".$_COOKIE['todo_clefutilisateur'];
-	$vlr = $clsbdd->selectBDD($rqt);
-	while ($vlr != false)
-	{
-		if ($vlr['lst'] == $clsbdd->clsrcv->lst)
-		{
-			$clsbdd->clssnd->mss = "Vous avez deja cette liste";															// message d'erreur
-			$clsbdd->clssnd->rtr = -3;																						// code erreur
-			echo json_encode($clsbdd->clssnd);																				// renvoie au js le json convertie en texte
-			return true;
-		}
-		$vlr = $clsbdd->suivantBDD();
-	}
 
-	$rqt = "INSERT INTO lst (lst) VALUES ('".$clsbdd->clsrcv->lst."')";
-	$clsbdd->insertBDD($rqt);
-
-	$rqt = "SELECT clf FROM lst WHERE lst='".$clsbdd->clsrcv->lst."' ORDER BY clf DESC LIMIT 1";
+	$rqt = "SELECT clf FROM lst WHERE lst='".$_COOKIE['todo_nomliste']."'";
 	$vlr = $clsbdd->selectBDD($rqt);
 
-	$rqt = "INSERT INTO jnt (nom, lst, drt) VALUES (".$_COOKIE['todo_clefutilisateur'].", ".$vlr['clf'].", 0)";
+	$rqt = "INSERT INTO act (lst, txt) VALUES (".$vlr['clf'].", '".$clsbdd->clsrcv->act."')";
 	$clsbdd->insertBDD($rqt);
 	$clsbdd->closeBDD();
 	
-	$clsbdd->clssnd->mss = "Liste cree";																		// message d'erreur
+	$clsbdd->clssnd->mss = "Action cree";																		// message d'erreur
 	$clsbdd->clssnd->rtr = 0;																						// code erreur
 	echo json_encode($clsbdd->clssnd);
 	return false;																										// renvoie au js le json convertie en texte

@@ -11,7 +11,7 @@
 	</head>
 	
 	<body>
-		<h3>My Lists</h3>
+		<h3>My Lists<?php echo " (".$_COOKIE['todo_clefutilisateur'].")"; ?></h3>
 		<div class="cadre">
 			<div class="centre">
 				<a href="../html/creation.html">Creation nouvelle liste</a>
@@ -28,19 +28,19 @@
 						return true;
 					}
 					
-					$rqt = "SELECT usr.prn, usr.nom, lst.lst FROM jnt, lst, usr WHERE usr.clf=jnt.nom AND lst.clf=jnt.lst AND jnt.drt=0 AND usr.clf=".$_COOKIE['clefutilisateur'];
+					$rqt = "SELECT usr.prn, usr.nom, lst.lst FROM jnt, lst, usr WHERE usr.clf=jnt.nom AND lst.clf=jnt.lst AND jnt.drt=0 AND usr.clf=".$_COOKIE['todo_clefutilisateur'];
 					$vlr = $clsbdd->selectBDD($rqt);
 					while ($vlr != false)
 					{
-						echo "<li><a href='affact.php'>".$vlr['prn']." ".$vlr['nom']." ".$vlr['lst']."</a></li>";
+						echo "<li><a href='affact.php?lst=".$vlr['lst']."'>".$vlr['prn']." ".$vlr['nom']." ".$vlr['lst']."</a></li>";
 						$vlr = $clsbdd->suivantBDD();
 					}
 					
-					$rqt = "SELECT usr.prn, usr.nom, lst.lst FROM jnt, lst, usr WHERE usr.clf=jnt.nom AND lst.clf=jnt.lst AND jnt.drt=0 AND jnt.lst IN (SELECT jnt.lst FROM jnt, lst, usr WHERE usr.clf=jnt.nom AND lst.clf=jnt.lst AND jnt.drt=1 AND usr.clf=".$_COOKIE['clefutilisateur'].")";
+					$rqt = "SELECT usr.prn, usr.nom, lst.lst FROM jnt, lst, usr WHERE usr.clf=jnt.nom AND lst.clf=jnt.lst AND jnt.drt=0 AND jnt.lst IN (SELECT jnt.lst FROM jnt, lst, usr WHERE usr.clf=jnt.nom AND lst.clf=jnt.lst AND jnt.drt=1 AND usr.clf=".$_COOKIE['todo_clefutilisateur'].")";
 					$vlr = $clsbdd->selectBDD($rqt);
 					while ($vlr != false)
 					{
-						echo "<li><a href='affact.php'>".$vlr['prn']." ".$vlr['nom']." ".$vlr['lst']."</a></li>";
+						echo "<li><a href='affact.php?lst=".$vlr['lst']."'>".$vlr['prn']." ".$vlr['nom']." ".$vlr['lst']."</a></li>";
 						$vlr = $clsbdd->suivantBDD();
 					}
 					$clsbdd->closeBDD();

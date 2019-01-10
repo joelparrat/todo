@@ -32,7 +32,7 @@
 
 	$clsbdd->clssnd->rtr = 0;
 	$clsbdd->clssnd->mss="Acces autorise ...";
-	setcookie("clefutilisateur", $vlr['clf'], time()+(24*60*60));
+	setcookie("todo_clefutilisateur", $vlr['clf'], time()+(24*60*60));
 
 	echo json_encode($clsbdd->clssnd);
 	$clsbdd->closeBDD();

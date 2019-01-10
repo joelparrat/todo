@@ -11,16 +11,21 @@
 	</head>
 	
 	<body>
-		<h3>My Actions</h3>
+		<?php
+			if (isset($_GET["lst"]))
+				setcookie("todo_nomliste", $_GET["lst"], time()+(24*60*60));
+			else
+				setcookie("todo_nomliste", "", -1);
+		?>
+		<h3>Les actions<?php echo ' de '.$_GET["lst"]; ?></h3>
 		<div class="cadre">
 			<div class="centre">
-				<a href="../html/crtact.php">Ajout action</a>
+				<a href="../html/crtact.html">Ajout action</a>
 			</div>
 			
 			<ul>
 				<?php
 					require_once 'gstbdd.php';
-
 					$vlr = $clsbdd->openBDD();																							// ouverture base
 					if ($vlr != false)																									// erreur ouverture
 					{
@@ -28,7 +33,7 @@
 						return true;
 					}
 					
-					$rqt = "SELECT txt FROM act, lst WHERE act.clf=lst.clf AND lst.clf=1";
+					$rqt = "SELECT txt FROM act, lst WHERE act.lst=lst.clf AND lst.lst='".$_GET['lst']."'";
 					$vlr = $clsbdd->selectBDD($rqt);
 					while ($vlr != false)
 					{
